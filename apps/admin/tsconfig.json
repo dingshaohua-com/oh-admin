@@ -1,0 +1,4 @@
+{
+  "extends": "@repo/config-ts/rsbuld-app.json",
+  "include": ["src"] 
+}
