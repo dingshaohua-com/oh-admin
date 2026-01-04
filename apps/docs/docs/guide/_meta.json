@@ -1,1 +1,19 @@
-["index"]
+[
+  "index",
+  {
+    "label": "Rsbuild",
+    "name": "rsbuild"
+  },
+  {
+    "label": "Turborepo",
+    "name": "turborepo"
+  },
+  {
+    "label": "Biome",
+    "name": "biome"
+  },
+  {
+    "label": "Typescript",
+    "name": "typescript"
+  }
+]
