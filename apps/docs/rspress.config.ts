@@ -9,6 +9,8 @@ export default defineConfig({
     light: '/rspress-light-logo.png',
     dark: '/rspress-dark-logo.png',
   },
+  base: '/docs/',
+  outDir: path.join(__dirname, '../../dist/docs'),
   themeConfig: {
     socialLinks: [
       {
