@@ -19,5 +19,9 @@
   {
     "label": "Tailwind",
     "name": "tailwind"
+  },
+  {
+    "label": "Shadcn",
+    "name": "shadcn"
   }
 ]
