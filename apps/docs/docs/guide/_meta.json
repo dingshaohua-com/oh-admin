@@ -15,5 +15,9 @@
   {
     "label": "Typescript",
     "name": "typescript"
+  },
+  {
+    "label": "Tailwind",
+    "name": "tailwind"
   }
 ]

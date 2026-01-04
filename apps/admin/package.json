@@ -16,6 +16,7 @@
     "react-router": "^7.11.0"
   },
   "devDependencies": {
+    "@repo/config-tailwind": "workspace:*",
     "@repo/config-ts": "workspace:*",
     "@rsbuild/core": "^1.6.14",
     "@rsbuild/plugin-react": "^1.4.2",
