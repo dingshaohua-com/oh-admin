@@ -184,9 +184,3 @@ pnpm biome check .
 # 自动修复
 pnpm biome check --write .
 ```
-
-## 下一步
-
-- 查看 [组件文档](/components/) 了解可用组件
-- 阅读 [配置指南](/config/) 了解如何自定义配置
-- 参考 [最佳实践](/best-practices/) 学习推荐的开发模式
