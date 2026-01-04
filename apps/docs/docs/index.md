@@ -12,6 +12,9 @@ hero:
     - theme: alt
       text: 预览
       link: https://admin.dingshaohua.com/
+    - theme: alt
+      text: 源码
+      link: https://github.com/dingshaohua-com/oh-admin
     # - theme: alt
     #   text: GitHub
     #   link: https://github.com/dingshaohua-com/oh-admin
