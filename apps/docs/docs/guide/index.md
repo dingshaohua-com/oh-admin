@@ -47,7 +47,7 @@ oh-admin/
 ### 1. 克隆项目
 
 ```bash
-git clone https://github.com/your-username/oh-admin.git
+git clone https://github.com/dingshaohua-com/oh-admin.git
 cd oh-admin
 ```
 
@@ -134,7 +134,7 @@ export default defineConfig({
 ```tsx
 // 使用 Tailwind 类名
 <div className="flex items-center justify-between p-4 bg-white rounded-lg shadow">
-  <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
+  <h1 className="text-xl font-bold text-gray-900">欢迎</h1>
 </div>
 ```
 
