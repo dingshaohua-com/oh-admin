@@ -10,8 +10,11 @@ hero:
       text: 快速开始
       link: /guide/
     - theme: alt
-      text: GitHub
-      link: https://github.com/dingshaohua-com/oh-admin
+      text: 预览
+      link: https://admin.dingshaohua.com/
+    # - theme: alt
+    #   text: GitHub
+    #   link: https://github.com/dingshaohua-com/oh-admin
   image:
     src: /rspress-icon.png
     alt: oh-admin Logo
