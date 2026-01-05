@@ -86,3 +86,19 @@
     align-items: center;
     gap: 8px;
   }
+
+  /* Checkbox 样式 */
+  .data-table .row-checkbox {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #3b82f6;
+  }
+
+  .data-table tbody tr.selected {
+    background-color: #eff6ff;
+  }
+
+  .data-table tbody tr.selected:hover {
+    background-color: #dbeafe;
+  }

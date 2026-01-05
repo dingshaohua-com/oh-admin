@@ -4,6 +4,7 @@ import {
     Table as TanStackTable,
     Row,
     Cell,
+    RowSelectionState,
   } from '@tanstack/react-table'
   
   export interface DataTableProps<TData> {
@@ -19,6 +20,10 @@ import {
     className?: string
     /** 行点击事件 */
     onRowClick?: (row: Row<TData>) => void
+    /** 是否启用行选择 */
+    enableRowSelection?: boolean
+    /** 选中状态变化回调 */
+    onSelectionChange?: (selectedRows: TData[]) => void
   }
   
-  export type { ColumnDef, Row, Cell, TanStackTable }
+  export type { ColumnDef, Row, Cell, TanStackTable, RowSelectionState }

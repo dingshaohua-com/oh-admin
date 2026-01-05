@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   useReactTable,
   getCoreRowModel,
   getSortedRowModel,
   flexRender,
   type SortingState,
+  type RowSelectionState,
 } from "@tanstack/react-table";
 import { ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
 import { DataTableProps } from "./types";
+import { getSelectColumn } from "./select-column";
 import "./styles.css";
 
 export function DataTable<TData>({
@@ -17,22 +19,44 @@ export function DataTable<TData>({
   emptyMessage = "暂无数据",
   className = "",
   onRowClick,
+  enableRowSelection = false,
+  onSelectionChange,
 }: DataTableProps<TData>) {
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+
+  // 启用行选择时自动添加 checkbox 列
+  const allColumns = useMemo(() => {
+    if (!enableRowSelection) return columns;
+    return [getSelectColumn<TData>(), ...columns];
+  }, [columns, enableRowSelection]);
 
   const table = useReactTable({
     data,
-    columns,
+    columns: allColumns,
     defaultColumn: {
-      enableSorting: false, // 列默认禁用排序，需要在列定义中显式启用
+      enableSorting: false,
     },
     state: {
       sorting,
+      rowSelection,
     },
+    enableRowSelection,
+    onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
+
+  // 选中状态变化时通知外部
+  useEffect(() => {
+    if (onSelectionChange) {
+      const selectedRows = table
+        .getSelectedRowModel()
+        .rows.map((row) => row.original);
+      onSelectionChange(selectedRows);
+    }
+  }, [rowSelection, onSelectionChange, table]);
 
   if (isLoading) {
     return (
@@ -94,19 +118,29 @@ export function DataTable<TData>({
           ))}
         </thead>
         <tbody>
-          {table.getRowModel().rows.map((row) => (
-            <tr
-              key={row.id}
-              onClick={() => onRowClick?.(row)}
-              className={onRowClick ? "clickable" : ""}
-            >
-              {row.getVisibleCells().map((cell) => (
-                <td key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
+          {table.getRowModel().rows.map((row) => {
+            const isSelected = row.getIsSelected();
+            const rowClasses = [
+              onRowClick ? "clickable" : "",
+              isSelected ? "selected" : "",
+            ]
+              .filter(Boolean)
+              .join(" ");
+
+            return (
+              <tr
+                key={row.id}
+                onClick={() => onRowClick?.(row)}
+                className={rowClasses}
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <td key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

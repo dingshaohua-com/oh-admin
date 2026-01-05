@@ -57,6 +57,8 @@ export default function UserTable() {
   return (
     <div className="demo-page flex justify-center items-center h-full w-full">
       <DataTable
+        onSelectionChange={(selectedRows) => console.log("选中行:", selectedRows)}
+        enableRowSelection
         columns={columns}
         data={users}
         onRowClick={(row) => console.log("点击行:", row.original)}
