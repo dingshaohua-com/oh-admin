@@ -3,13 +3,17 @@ import {
   useReactTable,
   getCoreRowModel,
   getSortedRowModel,
+  getFilteredRowModel,
+  getFacetedUniqueValues,
   flexRender,
   type SortingState,
   type RowSelectionState,
+  type ColumnFiltersState,
 } from "@tanstack/react-table";
 import { ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
 import { DataTableProps } from "./types";
 import { getSelectColumn } from "./select-column";
+import { ColumnFilter, multiSelectFilter } from "./filter-column";
 import "./styles.css";
 
 export function DataTable<TData>({
@@ -24,6 +28,7 @@ export function DataTable<TData>({
 }: DataTableProps<TData>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   // 启用行选择时自动添加 checkbox 列
   const allColumns = useMemo(() => {
@@ -36,16 +41,22 @@ export function DataTable<TData>({
     columns: allColumns,
     defaultColumn: {
       enableSorting: false,
+      enableColumnFilter: false,
+      filterFn: multiSelectFilter,  // 默认使用多选筛选
     },
     state: {
       sorting,
       rowSelection,
+      columnFilters,
     },
     enableRowSelection,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
   });
 
   // 选中状态变化时通知外部
@@ -83,6 +94,7 @@ export function DataTable<TData>({
               {headerGroup.headers.map((header) => {
                 const isSortable = header.column.getCanSort();
                 const sortDirection = header.column.getIsSorted();
+                const isFilterable = header.column.getCanFilter();
 
                 return (
                   <th
@@ -110,6 +122,7 @@ export function DataTable<TData>({
                           )}
                         </span>
                       )}
+                      {isFilterable && <ColumnFilter column={header.column} />}
                     </span>
                   </th>
                 );

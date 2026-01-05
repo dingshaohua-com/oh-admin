@@ -193,3 +193,131 @@ const columns = [
 | `column.getCanSort()` | 判断列是否可排序 |
 | `column.getIsSorted()` | 获取当前排序方向 (`"asc"` / `"desc"` / `false`) |
 | `column.getToggleSortingHandler()` | 获取切换排序的点击处理函数 |
+
+
+
+## 列筛选功能实现总结
+
+### 📦 新增文件
+
+**`filter-column.tsx`** - 筛选 UI 组件（独立模块）
+
+---
+
+### 🔧 第一步：创建筛选组件
+
+```tsx
+// filter-column.tsx
+export function ColumnFilter<TData>({ column }) {
+  // 1. 状态管理
+  const [isOpen, setIsOpen] = useState(false);
+  const [pendingValues, setPendingValues] = useState<Set<string>>(new Set());
+  
+  // 2. 自动获取该列所有唯一值作为选项
+  const uniqueValues = Array.from(column.getFacetedUniqueValues().keys());
+  
+  // 3. 渲染弹窗（使用 Portal 避免 overflow 截断）
+  return createPortal(<弹窗内容 />, document.body);
+}
+```
+
+---
+
+### 🔧 第二步：创建多选筛选函数
+
+```tsx
+// filter-column.tsx
+export function multiSelectFilter<TData>(row, columnId, filterValue: string[]) {
+  if (!filterValue || filterValue.length === 0) return true;
+  const value = String(row.getValue(columnId));
+  return filterValue.includes(value);
+}
+```
+
+---
+
+### 🔧 第三步：集成到 DataTable
+
+```tsx
+// data-table.tsx
+import { getFilteredRowModel, getFacetedUniqueValues } from "@tanstack/react-table";
+import { ColumnFilter, multiSelectFilter } from "./filter-column";
+
+const table = useReactTable({
+  // ... 其他配置
+  defaultColumn: {
+    enableColumnFilter: false,         // 默认关闭筛选
+    filterFn: multiSelectFilter,       // 默认筛选函数
+  },
+  state: { columnFilters },            // 筛选状态
+  onColumnFiltersChange: setColumnFilters,
+  getFilteredRowModel: getFilteredRowModel(),    // 启用筛选
+  getFacetedUniqueValues: getFacetedUniqueValues(), // 获取唯一值
+});
+
+// 表头渲染筛选图标
+{isFilterable && <ColumnFilter column={header.column} />}
+```
+
+---
+
+### 🔧 第四步：添加样式
+
+```css
+/* styles.css */
+.column-filter { position: relative; }
+.filter-trigger { /* 筛选按钮 */ }
+.filter-trigger.active { color: #3b82f6; } /* 激活态 */
+.filter-popover { /* 弹窗面板 */ }
+.filter-option { /* 选项行 */ }
+.filter-actions { /* 重置/确定按钮 */ }
+```
+
+---
+
+### ✅ 使用方式
+
+```tsx
+const columns = [
+  {
+    header: "角色",
+    accessorKey: "role",
+    enableColumnFilter: true,  // 只需这一行！
+  },
+];
+```
+
+---
+
+### 🎯 关键 API 总结
+
+| API | 说明 |
+|-----|------|
+| `getFilteredRowModel()` | 启用筛选功能的行模型 |
+| `getFacetedUniqueValues()` | 获取列的所有唯一值 |
+| `column.getCanFilter()` | 判断列是否可筛选 |
+| `column.getFilterValue()` | 获取当前筛选值 |
+| `column.setFilterValue()` | 设置筛选值 |
+
+---
+
+### 📁 文件结构（代码分离）
+
+```
+table/
+├── data-table.tsx     # 核心表格（状态管理）
+├── filter-column.tsx  # 筛选 UI（独立）
+├── select-column.tsx  # checkbox 列（独立）
+├── styles.css
+├── types.ts
+└── index.tsx          # 统一导出
+```
+
+---
+
+### 💡 设计亮点
+
+1. **代码分离** - 筛选 UI 独立文件，不入侵核心
+2. **Portal 渲染** - 弹窗不受表格 overflow 影响
+3. **自动获取选项** - 从数据中自动提取唯一值
+4. **零配置使用** - 只需 `enableColumnFilter: true`

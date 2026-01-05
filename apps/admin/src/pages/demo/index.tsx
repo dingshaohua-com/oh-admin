@@ -1,4 +1,3 @@
-// 在任何应用中
 import { DataTable, type Row } from "@repo/ui-comps/table";
 
 type User = {
@@ -25,6 +24,7 @@ const columns = [
   {
     header: "角色",
     accessorKey: "role",
+    enableColumnFilter: true,  // 只需开启即可
   },
   {
     header: "操作",
