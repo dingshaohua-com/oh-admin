@@ -1,3 +1,4 @@
+import { toast } from "@repo/shadcn-comps/sonner";
 import type { Row } from "@repo/ui-comps/table/types";
 import type { User } from "./type";
 
@@ -26,7 +27,7 @@ export const columns = [
     cell: ({ row }: { row: Row<User> }) => (
       <div className="flex gap-2">
         <button
-          onClick={() => alert("编辑:" + row.original.name)}
+          onClick={() => toast("编辑:" + row.original.name)}
           className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
         >
           编辑

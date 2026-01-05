@@ -10,8 +10,11 @@
   "license": "ISC",
   "packageManager": "pnpm@10.12.1",
   "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
     "@tanstack/react-table": "^8.21.3",
-    "lucide-react": "^0.562.0"
+    "lucide-react": "^0.562.0",
+    "react-hook-form": "^7.70.0",
+    "zod": "^4.3.5"
   },
   "devDependencies": {
     "@repo/config-ts": "workspace:*",
