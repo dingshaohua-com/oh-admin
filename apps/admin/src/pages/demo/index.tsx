@@ -16,6 +16,7 @@ const columns = [
   {
     header: "姓名",
     accessorKey: "name",
+    enableSorting: true,
   },
   {
     header: "邮箱",

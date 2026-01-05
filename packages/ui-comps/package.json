@@ -2,12 +2,16 @@
   "name": "@repo/ui-comps",
   "version": "0.0.0",
   "description": "",
-  "keywords": ["ui", "components"],
+  "keywords": [
+    "ui",
+    "components"
+  ],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.12.1",
   "dependencies": {
-    "@tanstack/react-table": "^8.21.3"
+    "@tanstack/react-table": "^8.21.3",
+    "lucide-react": "^0.562.0"
   },
   "devDependencies": {
     "@repo/config-ts": "workspace:*",

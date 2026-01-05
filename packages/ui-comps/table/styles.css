@@ -22,6 +22,32 @@
     color: #495057;
     border-bottom: 1px solid #dee2e6;
   }
+
+  .data-table th.sortable {
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.15s ease;
+  }
+
+  .data-table th.sortable:hover {
+    background-color: #e9ecef;
+  }
+
+  .data-table th .th-content {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .data-table th .sort-indicator {
+    display: inline-flex;
+    align-items: center;
+    opacity: 0.5;
+  }
+
+  .data-table th.sortable:hover .sort-indicator {
+    opacity: 0.8;
+  }
   
   .data-table td {
     padding: 12px 16px;
