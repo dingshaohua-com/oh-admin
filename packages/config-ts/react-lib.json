@@ -1,0 +1,24 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "compilerOptions": {
+      "composite": false,
+      "declaration": true,
+      "declarationMap": true,
+      "esModuleInterop": true,
+      "forceConsistentCasingInFileNames": true,
+      "inlineSources": false,
+      "isolatedModules": true,
+      "lib": ["ES2017", "DOM"],
+      "module": "ESNext",
+      "moduleResolution": "Bundler",
+      "noUnusedLocals": false,
+      "noUnusedParameters": false,
+      "preserveWatchOutput": true,
+      "skipLibCheck": true,
+      "strict": true,
+      "target": "ES2017",
+      "jsx": "react-jsx"
+    },
+    "exclude": ["node_modules"]
+  }
+  

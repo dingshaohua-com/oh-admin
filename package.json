@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "turbo run build",
+    "build": "turbo run build --filter=*...admin",
     "dev": "turbo run dev"
   },
   "keywords": [],

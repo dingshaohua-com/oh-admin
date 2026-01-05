@@ -1,0 +1,23 @@
+{
+  "name": "@repo/ui-comps",
+  "version": "0.0.0",
+  "description": "",
+  "keywords": ["ui", "components"],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.12.1",
+  "dependencies": {
+    "@tanstack/react-table": "^8.21.3"
+  },
+  "devDependencies": {
+    "@repo/config-ts": "workspace:*",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
+  },
+  "peerDependencies": {
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
+  }
+}
