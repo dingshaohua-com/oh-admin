@@ -1,19 +1,19 @@
-import { useState, useEffect, useMemo } from "react";
 import {
-  useReactTable,
-  getCoreRowModel,
-  getSortedRowModel,
-  getFilteredRowModel,
-  getFacetedUniqueValues,
-  flexRender,
-  type SortingState,
-  type RowSelectionState,
   type ColumnFiltersState,
+  flexRender,
+  getCoreRowModel,
+  getFacetedUniqueValues,
+  getFilteredRowModel,
+  getSortedRowModel,
+  type RowSelectionState,
+  type SortingState,
+  useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
-import { DataTableProps } from "./types";
-import { getSelectColumn } from "./select-column";
+import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { ColumnFilter, multiSelectFilter } from "./filter-column";
+import { getSelectColumn } from "./select-column";
+import type { DataTableProps } from "./types";
 import "./styles.css";
 
 export function DataTable<TData>({
@@ -97,22 +97,18 @@ export function DataTable<TData>({
                 const isFilterable = header.column.getCanFilter();
 
                 return (
-                  <th
-                    key={header.id}
-                    className={isSortable ? "sortable" : ""}
-                    onClick={
-                      isSortable
-                        ? header.column.getToggleSortingHandler()
-                        : undefined
-                    }
-                  >
+                  <th key={header.id}>
                     <span className="th-content">
                       {flexRender(
                         header.column.columnDef.header,
                         header.getContext()
                       )}
                       {isSortable && (
-                        <span className="sort-indicator">
+                        <button
+                          type="button"
+                          className={`sort-trigger ${sortDirection ? "active" : ""}`}
+                          onClick={header.column.getToggleSortingHandler()}
+                        >
                           {sortDirection === "asc" ? (
                             <ArrowUp size={14} />
                           ) : sortDirection === "desc" ? (
@@ -120,7 +116,7 @@ export function DataTable<TData>({
                           ) : (
                             <ArrowUpDown size={14} />
                           )}
-                        </span>
+                        </button>
                       )}
                       {isFilterable && <ColumnFilter column={header.column} />}
                     </span>

@@ -11,8 +11,9 @@
     "preview": "rsbuild preview"
   },
   "dependencies": {
-    "@repo/ui-comps": "workspace:*",
     "@repo/shadcn-comps": "workspace:*",
+    "@repo/ui-comps": "workspace:*",
+    "lucide-react": "^0.562.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "react-router": "^7.11.0"

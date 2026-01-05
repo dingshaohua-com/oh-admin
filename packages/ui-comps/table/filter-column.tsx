@@ -1,7 +1,7 @@
-import { useState, useRef, useEffect, useCallback } from "react";
-import { createPortal } from "react-dom";
 import type { Column } from "@tanstack/react-table";
 import { Filter } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 interface ColumnFilterProps<TData> {
   column: Column<TData, unknown>;

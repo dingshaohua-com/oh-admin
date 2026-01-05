@@ -1,3 +1,4 @@
+import * as path from 'node:path';
 import { defineConfig } from '@rsbuild/core';
 import { pluginReact } from '@rsbuild/plugin-react';
 
@@ -7,6 +8,11 @@ export default defineConfig({
   output: {
     distPath: {
       root: '../../dist',
+    },
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
     },
   },
 });

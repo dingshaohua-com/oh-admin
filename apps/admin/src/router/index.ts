@@ -1,6 +1,6 @@
 import { lazy } from 'react';
-// import Layout from '@/components/layout';
 import { createHashRouter } from 'react-router';
+import Layout from '../components/layout';
 
 export const router = createHashRouter([
   {
@@ -13,15 +13,16 @@ export const router = createHashRouter([
   },
     {
       path: '/',
-      Component: lazy(() => import('../pages/demo')),
-      // Component: Layout,
-      // children: [
-      //   { index: true, Component: lazy(() => import('@/pages/welcome')) },
-      //   { path: 'users', Component: lazy(() => import('@/pages/users')) },
-      //   { path: 'content', Component: lazy(() => import('@/pages/content')) },
-      //   { path: 'settings', Component: lazy(() => import('@/pages/settings')) },
-      //   { path: 'settings/security', Component: lazy(() => import('@/pages/settings/security')) },
-      // ],
+      
+      Component: Layout,
+      children: [
+        { index: true, Component: lazy(() => import('@/pages/demo')) },
+        // { index: true, Component: lazy(() => import('@/pages/welcome')) },
+        { path: 'users', Component: lazy(() => import('@/pages/users')) },
+        // { path: 'content', Component: lazy(() => import('@/pages/content')) },
+        // { path: 'settings', Component: lazy(() => import('@/pages/settings')) },
+        // { path: 'settings/security', Component: lazy(() => import('@/pages/settings/security')) },
+      ],
     },
 ]);
 
