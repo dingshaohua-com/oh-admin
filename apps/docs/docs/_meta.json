@@ -3,5 +3,10 @@
     "text": "指南",
     "link": "/guide/",
     "activeMatch": "/guide/"
+  },
+  {
+    "text": "结构",
+    "link": "/structure/",
+    "activeMatch": "/structure/"
   }
 ]

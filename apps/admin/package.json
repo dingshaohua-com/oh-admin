@@ -19,7 +19,7 @@
   "devDependencies": {
     "@repo/config-tailwind": "workspace:*",
     "@repo/config-ts": "workspace:*",
-    "@rsbuild/core": "^1.6.14",
+    "@rsbuild/core": "^1.7.1",
     "@rsbuild/plugin-react": "^1.4.2",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",

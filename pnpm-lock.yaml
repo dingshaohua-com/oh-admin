@@ -38,7 +38,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/config-ts
       '@rsbuild/core':
-        specifier: ^1.6.14
+        specifier: ^1.7.1
         version: 1.7.1
       '@rsbuild/plugin-react':
         specifier: ^1.4.2

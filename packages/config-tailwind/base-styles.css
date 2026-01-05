@@ -15,6 +15,7 @@
 @import './themes/default.css';
 @import './themes/blue.css';
 @import './themes/green.css';
+@import './themes/pink.css';
 
 /* 导入自定义样式层 */
 @import './layers/base.css';
