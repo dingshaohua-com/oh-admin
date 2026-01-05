@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "turbo run build --filter=*...admin",
-    "dev": "turbo run dev"
+    "build": "turbo run build",
+    "dev": "turbo run dev --filter=admin"
   },
   "keywords": [],
   "author": "",
