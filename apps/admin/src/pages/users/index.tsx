@@ -10,6 +10,9 @@ export default function Users() {
   const { data } = useUsers(pageSize)
   const users = data || [];
 
+  console.log(users);
+  
+
   
 
   return (

@@ -18,9 +18,16 @@ export const columns = [
     accessorKey: "email",
   },
   {
-    header: "角色",
-    accessorKey: "role",
+    header: "性别",
+    accessorKey: "gender",
     enableColumnFilter: true, // 只需开启即可
+    render: ({ row }: { row: Row<User> }) => (
+      <div className="flex items-center gap-2">
+        <span className={row.original.gender ? "text-blue-500" : "text-red-500"}>
+          {row.original.gender ? "男" : "女"}
+        </span>
+      </div>
+    ),
   },
   {
     header: "操作",
