@@ -5,6 +5,7 @@ import {
     Row,
     Cell,
     RowSelectionState,
+    PaginationState,
   } from '@tanstack/react-table'
   
   export interface DataTableProps<TData> {
@@ -24,6 +25,14 @@ import {
     enableRowSelection?: boolean
     /** 选中状态变化回调 */
     onSelectionChange?: (selectedRows: TData[]) => void
+    /** 是否启用分页 */
+    enablePagination?: boolean
+    /** 每页显示条数，默认 10 */
+    pageSize?: number
+    /** 可选的每页条数选项 */
+    pageSizeOptions?: number[]
   }
+
+  export type { PaginationState }
   
   export type { ColumnDef, Row, Cell, TanStackTable, RowSelectionState }

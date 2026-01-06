@@ -321,3 +321,90 @@ table/
 2. **Portal 渲染** - 弹窗不受表格 overflow 影响
 3. **自动获取选项** - 从数据中自动提取唯一值
 4. **零配置使用** - 只需 `enableColumnFilter: true`
+
+
+
+## 分页功能
+
+### 第一步：更新类型定义 (`types.ts`)
+
+添加分页相关的 Props：
+
+```typescript
+/** 是否启用分页 */
+enablePagination?: boolean
+/** 每页显示条数，默认 10 */
+pageSize?: number
+/** 可选的每页条数选项 */
+pageSizeOptions?: number[]
+```
+
+---
+
+### 第二步：修改主表格组件 (`data-table.tsx`)
+
+1. **导入分页相关依赖**：
+   - `PaginationState` 类型
+   - `getPaginationRowModel` 函数
+
+2. **添加分页状态**：
+   ```typescript
+   const [pagination, setPagination] = useState<PaginationState>({
+     pageIndex: 0,
+     pageSize,
+   });
+   ```
+
+3. **配置 useReactTable**：
+   - 在 `state` 中添加 `pagination`
+   - 添加 `onPaginationChange: setPagination`
+   - 添加 `getPaginationRowModel: getPaginationRowModel()`
+
+4. **引入分页组件**：
+   ```tsx
+   {enablePagination && (
+     <TablePagination table={table} pageSizeOptions={pageSizeOptions} />
+   )}
+   ```
+
+---
+
+### 第三步：创建独立分页组件 (`pagination.tsx`)
+
+包含：
+- 总条数和页码显示
+- 每页条数选择器 (`<select>`)
+- 翻页按钮（首页/上一页/下一页/末页）
+
+---
+
+### 第四步：添加分页样式 (`styles.css`)
+
+新增样式类：
+- `.pagination` - 分页容器布局
+- `.pagination-info` - 信息显示区
+- `.pagination-size` - 条数选择器
+- `.pagination-controls` - 翻页按钮组
+- `.pagination-btn` - 按钮样式（含 hover/disabled 状态）
+
+---
+
+### 第五步：更新导出 (`index.tsx`)
+
+```typescript
+export { TablePagination, type TablePaginationProps } from './pagination'
+```
+
+---
+
+### 使用方式
+
+```tsx
+<DataTable
+  columns={columns}
+  data={data}
+  enablePagination        // 启用分页
+  pageSize={10}           // 每页条数（可选）
+  pageSizeOptions={[10, 20, 50]}  // 条数选项（可选）
+/>
+```

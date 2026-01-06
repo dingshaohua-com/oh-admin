@@ -1,9 +1,11 @@
 import {
   type ColumnFiltersState,
+  type PaginationState,
   flexRender,
   getCoreRowModel,
   getFacetedUniqueValues,
   getFilteredRowModel,
+  getPaginationRowModel,
   getSortedRowModel,
   type RowSelectionState,
   type SortingState,
@@ -12,6 +14,7 @@ import {
 import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { ColumnFilter, multiSelectFilter } from "./filter-column";
+import { TablePagination } from "./pagination";
 import { getSelectColumn } from "./select-column";
 import type { DataTableProps } from "./types";
 import "./styles.css";
@@ -25,10 +28,17 @@ export function DataTable<TData>({
   onRowClick,
   enableRowSelection = false,
   onSelectionChange,
+  enablePagination = false,
+  pageSize = 10,
+  pageSizeOptions,
 }: DataTableProps<TData>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize,
+  });
 
   // 启用行选择时自动添加 checkbox 列
   const allColumns = useMemo(() => {
@@ -48,15 +58,18 @@ export function DataTable<TData>({
       sorting,
       rowSelection,
       columnFilters,
+      ...(enablePagination && { pagination }),
     },
     enableRowSelection,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
+    onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
+    ...(enablePagination && { getPaginationRowModel: getPaginationRowModel() }),
   });
 
   // 选中状态变化时通知外部
@@ -152,6 +165,11 @@ export function DataTable<TData>({
           })}
         </tbody>
       </table>
+
+      {/* 分页控制器 */}
+      {enablePagination && (
+        <TablePagination table={table} pageSizeOptions={pageSizeOptions} />
+      )}
     </div>
   );
 }
