@@ -25,9 +25,11 @@
     "@repo/config-tailwind": "workspace:*",
     "@repo/config-ts": "workspace:*",
     "@rsbuild/core": "^1.7.1",
+    "@rsbuild/plugin-babel": "^1.0.6",
     "@rsbuild/plugin-react": "^1.4.2",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
+    "babel-plugin-react-compiler": "^1.0.0",
     "typescript": "^5.9.3"
   }
 }

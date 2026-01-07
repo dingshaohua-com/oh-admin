@@ -23,7 +23,7 @@ export const getColumns = (props: GetColumnsProps) => {
       header: "性别",
       accessorKey: "gender",
       enableColumnFilter: true, // 只需开启即可
-      render: ({ row }: { row: Row<User> }) => (
+      cell: ({ row }: { row: Row<User> }) => (
         <div className="flex items-center gap-2">
           <span className={row.original.gender ? "text-blue-500" : "text-red-500"}>
             {row.original.gender ? "男" : "女"}

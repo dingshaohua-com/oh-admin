@@ -12,4 +12,11 @@ export const deleteUser = (id: number) => {
   return fetcher.delete(`/users/${id}`);
 };
 
+export const updateUser = (id: number, data: Partial<User>) => {
+  return fetcher.patch(`/users/${id}`, data);
+};
+
+export const createUser = (data: Omit<User, 'id'>) => {
+  return fetcher.post('/users', data);
+};
 
