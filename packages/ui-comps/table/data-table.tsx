@@ -31,6 +31,11 @@ export function DataTable<TData>({
   enablePagination = false,
   pageSize = 10,
   pageSizeOptions,
+  onPaginationChange,
+  serverSidePagination = false,
+  totalCount,
+  hasPreviousPage,
+  hasNextPage,
 }: DataTableProps<TData>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
@@ -40,11 +45,47 @@ export function DataTable<TData>({
     pageSize,
   });
 
+  // 同步外部传入的 pageSize 到内部状态
+  useEffect(() => {
+    if (pagination.pageSize !== pageSize) {
+      setPagination(prev => ({ ...prev, pageSize }));
+    }
+  }, [pageSize]);
+
   // 启用行选择时自动添加 checkbox 列
   const allColumns = useMemo(() => {
     if (!enableRowSelection) return columns;
     return [getSelectColumn<TData>(), ...columns];
   }, [columns, enableRowSelection]);
+
+  // 处理分页变化
+  const handlePaginationChange = (updater: PaginationState | ((old: PaginationState) => PaginationState)) => {
+    const newPagination = typeof updater === 'function' ? updater(pagination) : updater;
+    // 如果 pageSize 改变了，重置到第一页
+    const finalPagination = newPagination.pageSize !== pagination.pageSize
+      ? { ...newPagination, pageIndex: 0 }
+      : newPagination;
+    setPagination(finalPagination);
+    if (onPaginationChange) {
+      onPaginationChange(finalPagination);
+    }
+  };
+
+  // 计算是否有上一页/下一页（服务端分页时）
+  const computedHasPreviousPage = useMemo(() => {
+    if (serverSidePagination && totalCount !== undefined) {
+      return pagination.pageIndex > 0;
+    }
+    return hasPreviousPage;
+  }, [serverSidePagination, totalCount, pagination.pageIndex, hasPreviousPage]);
+
+  const computedHasNextPage = useMemo(() => {
+    if (serverSidePagination && totalCount !== undefined) {
+      const totalPages = Math.ceil(totalCount / pagination.pageSize);
+      return pagination.pageIndex + 1 < totalPages;
+    }
+    return hasNextPage;
+  }, [serverSidePagination, totalCount, pagination.pageIndex, pagination.pageSize, hasNextPage]);
 
   const table = useReactTable({
     data,
@@ -64,12 +105,20 @@ export function DataTable<TData>({
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
-    onPaginationChange: setPagination,
+    onPaginationChange: handlePaginationChange,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getFacetedUniqueValues: getFacetedUniqueValues(),
-    ...(enablePagination && { getPaginationRowModel: getPaginationRowModel() }),
+    // 服务端分页时不使用前端分页模型
+    ...(enablePagination && !serverSidePagination && { getPaginationRowModel: getPaginationRowModel() }),
+    // 服务端分页时需要手动设置页数
+    ...(enablePagination && serverSidePagination && {
+      manualPagination: true,
+      ...(totalCount !== undefined && {
+        pageCount: Math.ceil(totalCount / pagination.pageSize),
+      }),
+    }),
   });
 
   // 选中状态变化时通知外部
@@ -171,7 +220,15 @@ export function DataTable<TData>({
 
       {/* 分页控制器 */}
       {enablePagination && data.length > 0 && (
-        <TablePagination table={table} pageSizeOptions={pageSizeOptions} />
+        <TablePagination 
+          table={table} 
+          pageSizeOptions={pageSizeOptions}
+          hasPreviousPage={computedHasPreviousPage}
+          hasNextPage={computedHasNextPage}
+          totalCount={totalCount}
+          serverSidePagination={serverSidePagination}
+          pagination={pagination}
+        />
       )}
     </div>
   );

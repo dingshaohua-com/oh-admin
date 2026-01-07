@@ -7,12 +7,27 @@ import type { User } from "./type";
 import { toast } from "@repo/shadcn-comps/sonner";
 import { Button } from "@repo/shadcn-comps/button";
 import UserModal from "./user-modal";
+import type { PaginationState } from "@repo/ui-comps/table/types";
 
 export default function Users() {
   // 这个是搜索表单给接口的参数，只有在点击了提交按钮时，才会更新
   const [searchParams, setSearchParams] = useState<FormValues>();
-  const { data, mutate } = useUsers(searchParams);
-  const users = data || [];
+  // 分页状态
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  });
+  
+  // 合并搜索参数和分页参数
+  const apiParams = {
+    ...searchParams,
+    _page: pagination.pageIndex + 1, // json-server 的 _page 从 1 开始
+    _per_page: pagination.pageSize,
+  };
+  
+  const { data, mutate } = useUsers(apiParams);
+  const users = data?.data || [];
+  const totalCount = data?.items;
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
@@ -61,11 +76,20 @@ export default function Users() {
     toast.dismiss(toastId);
   };
 
-  const onReset = () => setSearchParams(undefined);
+  const onReset = () => {
+    setSearchParams(undefined);
+    // 重置时也重置分页到第一页
+    setPagination(prev => ({ ...prev, pageIndex: 0 }));
+  };
   const onSubmit = (data: FormValues) => {
     console.log(data, 'data');
-    
-    setSearchParams(data)
+    setSearchParams(data);
+    // 搜索时重置分页到第一页
+    setPagination(prev => ({ ...prev, pageIndex: 0 }));
+  };
+  
+  const handlePaginationChange = (newPagination: PaginationState) => {
+    setPagination(newPagination);
   };
 
   const onBatchDelete = () => {
@@ -83,9 +107,12 @@ export default function Users() {
           onSelectionChange={(selectedRows) =>
             console.log("选中行:", selectedRows)
           }
-          pageSize={10}
+          pageSize={pagination.pageSize}
           enablePagination
           enableRowSelection
+          serverSidePagination
+          totalCount={totalCount}
+          onPaginationChange={handlePaginationChange}
           columns={getColumns({
             onEdit,
             onDelete,

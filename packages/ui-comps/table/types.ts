@@ -31,6 +31,16 @@ import {
     pageSize?: number
     /** 可选的每页条数选项 */
     pageSizeOptions?: number[]
+    /** 分页状态变化回调（用于服务端分页） */
+    onPaginationChange?: (pagination: PaginationState) => void
+    /** 是否使用服务端分页，默认 false（前端分页） */
+    serverSidePagination?: boolean
+    /** 总数据条数（服务端分页时需要） */
+    totalCount?: number
+    /** 是否有上一页（服务端分页时使用，覆盖默认判断） */
+    hasPreviousPage?: boolean
+    /** 是否有下一页（服务端分页时使用，覆盖默认判断） */
+    hasNextPage?: boolean
   }
 
   export type { PaginationState }
