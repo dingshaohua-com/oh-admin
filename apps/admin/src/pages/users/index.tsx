@@ -15,16 +15,16 @@ export default function Users() {
   // 分页状态
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize: 10,
+    pageSize: 20,
   });
-  
+
   // 合并搜索参数和分页参数
   const apiParams = {
     ...searchParams,
     _page: pagination.pageIndex + 1, // json-server 的 _page 从 1 开始
     _per_page: pagination.pageSize,
   };
-  
+
   const { data, mutate } = useUsers(apiParams);
   const users = data?.data || [];
   const totalCount = data?.items;
@@ -79,15 +79,15 @@ export default function Users() {
   const onReset = () => {
     setSearchParams(undefined);
     // 重置时也重置分页到第一页
-    setPagination(prev => ({ ...prev, pageIndex: 0 }));
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
   };
   const onSubmit = (data: FormValues) => {
-    console.log(data, 'data');
+    console.log(data, "data");
     setSearchParams(data);
     // 搜索时重置分页到第一页
-    setPagination(prev => ({ ...prev, pageIndex: 0 }));
+    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
   };
-  
+
   const handlePaginationChange = (newPagination: PaginationState) => {
     setPagination(newPagination);
   };
@@ -96,33 +96,41 @@ export default function Users() {
     toast.error("暂未实现批量删除");
   };
   return (
-    <div className="flex flex-col gap-4 h-full">
-      <SearchForm onReset={onReset} onSubmit={onSubmit} />
-      <div className="bg-white p-2 flex-1">
-        <div className="flex justify-end items-center my-2 space-x-2">
-          <Button onClick={onBatchDelete} className="bg-red-500 cursor-pointer hover:bg-red-600">批量删除</Button>
-          <Button onClick={onAdd} className="cursor-pointer">新增用户</Button>
+    <>
+      <div className="flex flex-col gap-4 h-full">
+        <SearchForm onReset={onReset} onSubmit={onSubmit} />
+        <div className="bg-white p-2 flex-1 flex flex-col min-h-0">
+          <div className="flex justify-end items-center my-2 space-x-2">
+            <Button
+              onClick={onBatchDelete}
+              className="bg-red-500 cursor-pointer hover:bg-red-600"
+            >
+              批量删除
+            </Button>
+            <Button onClick={onAdd} className="cursor-pointer">
+              新增用户
+            </Button>
+          </div>
+          <DataTable
+            onSelectionChange={(selectedRows) =>
+              console.log("选中行:", selectedRows)
+            }
+            pageSize={pagination.pageSize}
+            enablePagination
+            enableRowSelection
+            serverSidePagination
+            totalCount={totalCount}
+            onPaginationChange={handlePaginationChange}
+            columns={getColumns({
+              onEdit,
+              onDelete,
+            })}
+            data={users}
+            onRowClick={(row) => console.log("点击行:", row.original)}
+            className="border rounded-lg flex-1"
+          />
         </div>
-        <DataTable
-          onSelectionChange={(selectedRows) =>
-            console.log("选中行:", selectedRows)
-          }
-          pageSize={pagination.pageSize}
-          enablePagination
-          enableRowSelection
-          serverSidePagination
-          totalCount={totalCount}
-          onPaginationChange={handlePaginationChange}
-          columns={getColumns({
-            onEdit,
-            onDelete,
-          })}
-          data={users}
-          onRowClick={(row) => console.log("点击行:", row.original)}
-          className="border rounded-lg"
-        />
       </div>
-
       <UserModal
         key={editingUser?.id ?? "new"}
         open={modalOpen}
@@ -130,6 +138,6 @@ export default function Users() {
         onOpenChange={setModalOpen}
         onSubmit={handleSubmit}
       />
-    </div>
+    </>
   );
 }

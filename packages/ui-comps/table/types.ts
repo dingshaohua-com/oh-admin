@@ -19,6 +19,8 @@ import {
     emptyMessage?: string
     /** 表格类名 */
     className?: string
+    /** 表格样式 */
+    style?: React.CSSProperties
     /** 行点击事件 */
     onRowClick?: (row: Row<TData>) => void
     /** 是否启用行选择 */
@@ -41,6 +43,8 @@ import {
     hasPreviousPage?: boolean
     /** 是否有下一页（服务端分页时使用，覆盖默认判断） */
     hasNextPage?: boolean
+    /** 表格最大高度（设置后表头固定，内容可滚动） */
+    maxHeight?: string | number
   }
 
   export type { PaginationState }

@@ -25,6 +25,7 @@ export function DataTable<TData>({
   isLoading = false,
   emptyMessage = "暂无数据",
   className = "",
+  style,
   onRowClick,
   enableRowSelection = false,
   onSelectionChange,
@@ -36,6 +37,7 @@ export function DataTable<TData>({
   totalCount,
   hasPreviousPage,
   hasNextPage,
+  maxHeight,
 }: DataTableProps<TData>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
@@ -139,10 +141,53 @@ export function DataTable<TData>({
     );
   }
 
+  // 检查是否需要启用滚动：
+  // 1. 设置了 maxHeight
+  // 2. className 中包含 flex-1
+  // 3. style 中设置了 flex 相关属性（flex: 1, flex: '1', flex: '1 1 0%' 等）
+  const hasFlex1InClassName = className.includes('flex-1');
+  
+  // 检查 style 中的 flex 属性
+  const hasFlex1InStyle = useMemo(() => {
+    if (!style?.flex) return false;
+    const flexValue = style.flex;
+    // 支持多种 flex 值格式：1, '1', '1 1 0%', '1 1 auto', '1 0 auto' 等
+    if (typeof flexValue === 'number' && flexValue >= 1) return true;
+    if (typeof flexValue === 'string') {
+      const flexStr = String(flexValue).trim();
+      // 检查是否以 '1' 开头（如 '1', '1 1 0%', '1 1 auto' 等）
+      // 排除 'auto' 和 'none'，它们不是 flex: 1
+      if (flexStr === 'auto' || flexStr === 'none') return false;
+      return flexStr.startsWith('1');
+    }
+    return false;
+  }, [style?.flex]);
+  
+  const hasFlex1 = hasFlex1InClassName || hasFlex1InStyle;
+  const shouldEnableScroll = maxHeight || hasFlex1;
+
+  // 计算表格容器的样式（只有设置了 maxHeight 时才需要内联样式）
+  const tableContainerStyle = maxHeight
+    ? {
+        maxHeight: typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight,
+        overflowY: 'auto' as const,
+      }
+    : undefined;
+
+  const tableContainerClassName = shouldEnableScroll
+    ? 'data-table-container data-table-scrollable'
+    : 'data-table-container';
+
+  // 如果使用 flex-1，需要让外层容器也支持 flex
+  const wrapperClassName = hasFlex1
+    ? `data-table flex flex-col ${className}`
+    : `data-table ${className}`;
+
   return (
-    <div className={`data-table ${className}`}>
-      <table>
-        <thead>
+    <div className={wrapperClassName} style={style}>
+      <div className={tableContainerClassName} style={tableContainerStyle}>
+        <table>
+          <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
@@ -216,7 +261,8 @@ export function DataTable<TData>({
             })
           )}
         </tbody>
-      </table>
+        </table>
+      </div>
 
       {/* 分页控制器 */}
       {enablePagination && data.length > 0 && (

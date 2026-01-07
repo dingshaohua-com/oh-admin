@@ -2,14 +2,40 @@
 .data-table {
     width: 100%;
     overflow-x: auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0; /* 重要：允许 flex 子元素缩小 */
   }
-  
-  .data-table table {
+
+  /* 当使用 flex-1 时，确保表格容器有正确的高度约束 */
+  .data-table.flex-1 {
+    overflow: hidden; /* 防止内容溢出 */
+  }
+
+  .data-table-container {
     width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
+    overflow-x: auto;
+    position: relative;
+    min-height: 0; /* 重要：允许 flex 子元素缩小 */
   }
-  
+
+  /* 当表格容器可滚动时，表头固定 */
+  .data-table-scrollable {
+    overflow-y: auto;
+    overflow-x: auto;
+    flex: 1 1 0%; /* 使用 flex: 1 1 0% 确保正确占据空间 */
+    min-height: 0; /* 重要：允许 flex 子元素缩小 */
+    height: 0; /* 关键：配合 flex: 1 使用，让容器有高度约束，防止被内容撑大 */
+    position: relative;
+  }
+
+  /* 当设置了 maxHeight 或使用 flex-1 时，表头固定 */
+  .data-table-scrollable thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
   .data-table thead {
     background-color: #f8f9fa;
     border-bottom: 2px solid #dee2e6;
@@ -21,6 +47,20 @@
     font-weight: 600;
     color: #495057;
     border-bottom: 1px solid #dee2e6;
+    background-color: #f8f9fa;
+  }
+
+  /* 当设置了 maxHeight 或使用 flex-1 时，表头单元格也需要固定 */
+  .data-table-scrollable th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  
+  .data-table table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
   }
 
   .data-table th .th-content {
