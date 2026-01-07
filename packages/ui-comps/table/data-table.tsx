@@ -11,7 +11,7 @@ import {
   type SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
+import { ArrowDown, ArrowUp, ArrowUpDown, Inbox } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { ColumnFilter, multiSelectFilter } from "./filter-column";
 import { TablePagination } from "./pagination";
@@ -90,14 +90,6 @@ export function DataTable<TData>({
     );
   }
 
-  if (!data.length) {
-    return (
-      <div className={`data-table empty ${className}`}>
-        <div className="empty-message">{emptyMessage}</div>
-      </div>
-    );
-  }
-
   return (
     <div className={`data-table ${className}`}>
       <table>
@@ -140,34 +132,45 @@ export function DataTable<TData>({
           ))}
         </thead>
         <tbody>
-          {table.getRowModel().rows.map((row) => {
-            const isSelected = row.getIsSelected();
-            const rowClasses = [
-              onRowClick ? "clickable" : "",
-              isSelected ? "selected" : "",
-            ]
-              .filter(Boolean)
-              .join(" ");
+          {!data.length ? (
+            <tr className="empty-row">
+              <td colSpan={allColumns.length} className="empty-cell">
+                <div className="empty-state">
+                  <Inbox size={48} className="empty-icon" />
+                  <div className="empty-message">{emptyMessage}</div>
+                </div>
+              </td>
+            </tr>
+          ) : (
+            table.getRowModel().rows.map((row) => {
+              const isSelected = row.getIsSelected();
+              const rowClasses = [
+                onRowClick ? "clickable" : "",
+                isSelected ? "selected" : "",
+              ]
+                .filter(Boolean)
+                .join(" ");
 
-            return (
-              <tr
-                key={row.id}
-                onClick={() => onRowClick?.(row)}
-                className={rowClasses}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <td key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            );
-          })}
+              return (
+                <tr
+                  key={row.id}
+                  onClick={() => onRowClick?.(row)}
+                  className={rowClasses}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <td key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </td>
+                  ))}
+                </tr>
+              );
+            })
+          )}
         </tbody>
       </table>
 
       {/* 分页控制器 */}
-      {enablePagination && (
+      {enablePagination && data.length > 0 && (
         <TablePagination table={table} pageSizeOptions={pageSizeOptions} />
       )}
     </div>

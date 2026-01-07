@@ -11,6 +11,7 @@ import { Input } from '@repo/shadcn-comps/input';
 import { Label } from '@repo/shadcn-comps/label';
 import { RadioGroup, RadioGroupItem } from '@repo/shadcn-comps/radio-group';
 import { Controller, useForm, z, zodResolver } from '@repo/ui-comps/form';
+import { useControllableValue } from 'ahooks';
 import type { User } from './type';
 
 const formSchema = z.object({
@@ -25,18 +26,23 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 interface UserModalProps {
-  open: boolean;
+  open?: boolean;
+  defaultOpen?: boolean;
   user?: User;
-  onOpenChange: (open: boolean) => void;
+  onOpenChange?: (open: boolean) => void;
   onSubmit: (data: FormValues & { id?: number }) => Promise<void>;
 }
 
-export default function UserModal({
-  open,
-  user,
-  onOpenChange,
-  onSubmit,
-}: UserModalProps) {
+export default function UserModal(props: UserModalProps) {
+  const { user, onSubmit } = props;
+  // 使用 useControllableValue 处理 open 状态，支持受控和非受控两种模式
+  const [open, setOpen] = useControllableValue(props, {
+    defaultValue: false,
+    defaultValuePropName: 'defaultOpen',
+    valuePropName: 'open',
+    trigger: 'onOpenChange',
+  });
+
   const isEdit = !!user;
 
   const form = useForm<FormValues>({
@@ -50,11 +56,11 @@ export default function UserModal({
 
   const handleSubmit = async (data: FormValues) => {
     await onSubmit({ ...data, id: user?.id });
-    onOpenChange(false);
+    setOpen(false);
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{isEdit ? '编辑用户' : '新增用户'}</DialogTitle>
@@ -120,7 +126,7 @@ export default function UserModal({
             <Button
               type="button"
               variant="outline"
-              onClick={() => onOpenChange(false)}
+              onClick={() => setOpen(false)}
             >
               取消
             </Button>

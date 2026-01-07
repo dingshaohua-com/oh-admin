@@ -78,13 +78,34 @@
     color: #6c757d;
   }
   
-  .data-table .empty {
+  .data-table .empty-row {
+    border: none;
+  }
+
+  .data-table .empty-cell {
+    padding: 60px 20px;
+    text-align: center;
+    border: none;
+  }
+
+  .data-table .empty-state {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    min-height: 200px;
-    color: #6c757d;
-    font-style: italic;
+    justify-content: center;
+    gap: 16px;
+    color: #9ca3af;
+  }
+
+  .data-table .empty-icon {
+    opacity: 0.4;
+    color: #d1d5db;
+  }
+
+  .data-table .empty-message {
+    font-size: 14px;
+    color: #6b7280;
+    font-weight: 500;
   }
   
   .data-table .loading-spinner {

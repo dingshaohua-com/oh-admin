@@ -1,6 +1,6 @@
 import { DataTable } from "@repo/ui-comps/table";
 import { getColumns } from "./helper";
-import SearchForm from "./form";
+import SearchForm, { type FormValues } from "./form";
 import { useState } from "react";
 import { createUser, deleteUser, updateUser, useUsers } from "@/api/user";
 import type { User } from "./type";
@@ -9,8 +9,9 @@ import { Button } from "@repo/shadcn-comps/button";
 import UserModal from "./user-modal";
 
 export default function Users() {
-  const [pageSize, setPageSize] = useState(1);
-  const { data, mutate } = useUsers(pageSize);
+  // 这个是搜索表单给接口的参数，只有在点击了提交按钮时，才会更新
+  const [searchParams, setSearchParams] = useState<FormValues>();
+  const { data, mutate } = useUsers(searchParams);
   const users = data || [];
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -26,20 +27,30 @@ export default function Users() {
     setModalOpen(true);
   };
 
-  const handleSubmit = async (data: { id?: number; name: string; email: string; gender: boolean }) => {
-    if (data.id) {
-      const toastId = toast.loading("正在保存...");
-      await updateUser(data.id, { name: data.name, email: data.email, gender: data.gender });
-      toast.success("保存成功", { id: toastId });
-      await mutate();
-      toast.dismiss(toastId);
+  const handleSubmit = async (data: {
+    id?: number;
+    name: string;
+    email: string;
+    gender: boolean;
+  }) => {
+    const isEdit = !!data.id;
+    const loadingText = isEdit ? "正在保存..." : "正在创建...";
+    const successText = isEdit ? "保存成功" : "创建成功";
+    const userData = {
+      name: data.name,
+      email: data.email,
+      gender: data.gender,
+    };
+
+    const toastId = toast.loading(loadingText);
+    if (isEdit) {
+      await updateUser(data.id!, userData);
     } else {
-      const toastId = toast.loading("正在创建...");
-      await createUser({ name: data.name, email: data.email, gender: data.gender });
-      toast.success("创建成功", { id: toastId });
-      await mutate();
-      toast.dismiss(toastId);
+      await createUser(userData);
     }
+    toast.success(successText, { id: toastId });
+    await mutate();
+    toast.dismiss(toastId);
   };
 
   const onDelete = async (user: User) => {
@@ -50,13 +61,24 @@ export default function Users() {
     toast.dismiss(toastId);
   };
 
+  const onReset = () => setSearchParams(undefined);
+  const onSubmit = (data: FormValues) => {
+    console.log(data, 'data');
+    
+    setSearchParams(data)
+  };
+
+  const onBatchDelete = () => {
+    toast.error("暂未实现批量删除");
+  };
   return (
     <div className="flex flex-col gap-4 h-full">
-       <SearchForm />
+      <SearchForm onReset={onReset} onSubmit={onSubmit} />
       <div className="bg-white p-2 flex-1">
-      <div className="flex justify-end items-center my-2">
-        <Button onClick={onAdd}>新增用户</Button>
-      </div>
+        <div className="flex justify-end items-center my-2 space-x-2">
+          <Button onClick={onBatchDelete} className="bg-red-500 cursor-pointer hover:bg-red-600">批量删除</Button>
+          <Button onClick={onAdd} className="cursor-pointer">新增用户</Button>
+        </div>
         <DataTable
           onSelectionChange={(selectedRows) =>
             console.log("选中行:", selectedRows)
@@ -75,7 +97,7 @@ export default function Users() {
       </div>
 
       <UserModal
-        key={editingUser?.id ?? 'new'}
+        key={editingUser?.id ?? "new"}
         open={modalOpen}
         user={editingUser ?? undefined}
         onOpenChange={setModalOpen}
