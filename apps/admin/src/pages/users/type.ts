@@ -4,3 +4,8 @@ export type User = {
   email: string;
   gender: boolean;
 };
+
+export type GetColumnsProps = {
+  onEdit: (user: User) => void;
+  onDelete: (user: User) => void;
+}

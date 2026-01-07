@@ -7,3 +7,9 @@ export const useUsers = (pageSize: number) => {
     suspense: true,
   });
 };
+
+export const deleteUser = (id: number) => {
+  return fetcher.delete(`/users/${id}`);
+};
+
+
